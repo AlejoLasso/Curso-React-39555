@@ -1,22 +1,43 @@
+import {
+  Box,
+  Button,
+  Heading,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+} from "@chakra-ui/react";
 import React from "react";
+import { Link } from "react-router-dom";
 import CardWidget from "./CardWidget";
 
 const NavBar = () => {
   return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-light">
-  <a className="navbar-brand" href="#">Hellboy Games</a>
-  <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-    <span className="navbar-toggler-icon"></span>
-  </button>
-  <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
-    <div className="navbar-nav">
-      <a className="nav-item nav-link active" href="#">Inicio <span className="sr-only"></span></a>
-      <a className="nav-item nav-link" href="#">Contacto</a>
-      <a className="nav-item nav-link" href="#">Mercaderia</a>
-      <a className="nav-item nav-link" href="#"><CardWidget></CardWidget></a>
-    </div>
-  </div>
-</nav>
+    <>
+      <Box as="button" p="5" w="300px" h="50" bg="black">
+        <Heading as="h3" size="lg">
+          <Link to={"/"}>Hellboys Games</Link>
+        </Heading>
+      </Box>
+      <Box>
+        <Menu>
+          <MenuButton as={Button}>Categorias</MenuButton>
+          <MenuList className="menu-list">
+            <Link to={`/category/${"Ivrea"}`}>
+              <MenuItem>Ivrea</MenuItem>
+            </Link>
+            <Link to={`/category/${"Panini"}`}>
+              <MenuItem>Panini</MenuItem>
+            </Link>
+          </MenuList>
+        </Menu>
+      </Box>
+      <Box>
+      <Link to={"/cart"}><CardWidget></CardWidget>
+        
+        </Link>
+      </Box>
+    </>
   );
 };
 
