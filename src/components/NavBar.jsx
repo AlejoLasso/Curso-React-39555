@@ -1,3 +1,6 @@
+import React, { useContext } from "react";
+import { Link } from "react-router-dom";
+import { CartContext } from "../contexts/ShoppingCartContext";
 import {
   Box,
   Button,
@@ -7,22 +10,32 @@ import {
   MenuItem,
   MenuList,
 } from "@chakra-ui/react";
-import React from "react";
-import { Link } from "react-router-dom";
 import CardWidget from "./CardWidget";
 
-const NavBar = () => {
+export const Navbar = () => {
+  const [cart, setCart] = useContext(CartContext);
+
+  const quantity = cart.reduce((acc, curr) => {
+    return acc + curr.quantity;
+  }, 0);
+
+  const navStyles = {
+    color: "#fff",
+    listStyle: "none",
+    textDecoration: "none",
+  };
+
   return (
-    <>
-      <Box as="button" p="5" w="300px" h="50" bg="black">
-        <Heading as="h3" size="lg">
+    <nav>
+      <Box bg="black">
+        <Heading>
           <Link to={"/"}>Hellboys Games</Link>
         </Heading>
       </Box>
       <Box>
         <Menu>
           <MenuButton as={Button}>Categorias</MenuButton>
-          <MenuList className="menu-list">
+          <MenuList className="items-list">
             <Link to={`/category/${"Ivrea"}`}>
               <MenuItem>Ivrea</MenuItem>
             </Link>
@@ -32,13 +45,13 @@ const NavBar = () => {
           </MenuList>
         </Menu>
       </Box>
-      <Box>
-      <Link to={"/cart"}><CardWidget></CardWidget>
-        
+      <ul className="nav-list">
+        <Link to={"/shoppingCart"} style={navStyles}><CardWidget></CardWidget>
+          <li>
+            Items en el carrito: <span className="cart-count">{quantity}</span>
+          </li>
         </Link>
-      </Box>
-    </>
+      </ul>
+    </nav>
   );
 };
-
-export default NavBar;

@@ -1,49 +1,77 @@
-import {
-  Card,
-  CardBody,
-  Image,
-  Stack,
-  Heading,
-  Text,
-  Divider,
-  CardFooter,
-  Center,
-  Button,
-} from "@chakra-ui/react";
-import React from "react";
+import React, { useContext } from "react";
+import { CartContext } from "../contexts/ShoppingCartContext";
 import { Link } from "react-router-dom";
 
-const Item = ({ id, name, precio, category, imagen,}) => {
+export const Item = ({ id, name, precio, category, imagen, stock }) => {
+  const [cart, setCart] = useContext(CartContext);
+
+  const addToCart = () => {
+    setCart((currItems) => {
+      const isItemsFound = currItems.find((item) => item.id === id);
+      if (isItemsFound) {
+        return currItems.map((item) => {
+          if (item.id === id) {
+            return { ...item, quantity: item.quantity + 1 };
+          } else {
+            return item;
+          }
+        });
+      } else {
+        return [...currItems, { id, quantity: 1, precio }];
+      }
+    });
+  };
+
+  const removeItem = (id) => {
+    setCart((currItems) => {
+      if (currItems.find((item) => item.id === id)?.quantity === 1) {
+        return currItems.filter((item) => item.id !== id);
+      } else {
+        return currItems.map((item) => {
+          if (item.id === id) {
+            return { ...item, quantity: item.quantity - 1 };
+          } else {
+            return item;
+          }
+        });
+      }
+    });
+  };
+
+  const getQuantityById = (id) => {
+    return cart.find((item) => item.id === id)?.quantity || 0;
+  };
+
+  const quantityPerItem = getQuantityById(id);
+
   return (
-    <div>
-      <div key={id}>
-        <Center p="1rem">
-          <Card className="card-main">
-            <CardBody>
-              <Image borderRadius="lg" src={imagen} />
-              <Stack mt="6" spacing="3">
-                <Heading size="md">{name}</Heading>
-                <Text>
-                  Categoria: {category}
-                </Text>
-                <Text>
-                  Precio: ${precio}
-                </Text>
-              </Stack>
-            </CardBody>
-            <Divider />
-            <CardFooter className="card-footer">
-              <Center className="btn-center">
-                <Button variant="solid" colorScheme="blue">
-                  <Link to={`/item/${id}`}>Descripcion</Link>
-                </Button>
-              </Center>
-            </CardFooter>
-          </Card>
-        </Center>
-      </div>
+    <div className="item-box">
+      {quantityPerItem > 0 && (
+        <div className="item-quantity">{quantityPerItem}</div>
+      )}
+
+      <h1>{name}</h1>
+      <img src={imagen} />
+      <div>Editorial: {category}</div>
+      <div className="item-price">${precio}</div>
+      <button className="item-descripcion">
+        <Link to={`/item/${id}`}>Descripcion</Link>
+      </button>
+      {quantityPerItem === 0 ? (
+        <button className="item-add-button" onClick={() => addToCart()}>
+          + Agregar al carrito
+        </button>
+      ) : (
+        <button className="item-plus-button" onClick={() => addToCart()}>
+          + Agregar mas
+        </button>
+      )}
+
+      {quantityPerItem > 0 && (
+        <button className="item-minus-button" onClick={() => removeItem(id)}>
+          Eliminar
+        </button>
+      )}
     </div>
   );
 };
-
-export default Item;
